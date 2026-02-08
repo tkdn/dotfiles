@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# add read:packages scope to gh token.
+gh auth refresh -h github.com -s read:packages
+# add token to pull images from ghcr.ico.
+gh auth token | docker login ghcr.io -u tkdn --password-stdin
