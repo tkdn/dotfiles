@@ -1,4 +1,5 @@
 # global
+node_modules
 dot_DS_Store
 
 # config/git
