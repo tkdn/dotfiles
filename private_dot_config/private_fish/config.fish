@@ -1,0 +1,76 @@
+if not functions -q fisher
+    set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
+    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+    fish -c fisher
+end
+
+###### pyenv start
+# python pyenv
+set --export PYENV_ROOT $HOME/.pyenv
+
+while set index (contains -i -- $HOME/.pyenv/shims $PATH)
+set -eg PATH[$index]; end; set -e index
+set -gx PATH $HOME/.pyenv/shims $PATH
+set -gx PYENV_SHELL fish
+
+command pyenv rehash 2>/dev/null
+
+function pyenv
+  set command $argv[1]
+  set -e argv[1]
+
+  switch "$command"
+  case rehash shell
+    source (pyenv "sh-$command" $argv|psub)
+  case '*'
+    command pyenv "$command" $argv
+  end
+end
+###### pyenv end
+
+#libpq
+# If you need to have libpq first in your PATH, run:
+fish_add_path /usr/local/opt/libpq/bin
+# For compilers to find libpq you may need to set:
+set -gx LDFLAGS "-L/opt/homebrew/opt/readline/lib"
+set -gx CPPFLAGS "-I/opt/homebrew/opt/readline/include"
+# For pkg-config to find libpq you may need to set:
+set -gx PKG_CONFIG_PATH "/opt/homebrew/opt/libffi/lib/pkgconfig"
+# set -gx RUBY_CONFIGURE_OPTS "--with-openssl-dir=(brew --prefix openssl@3)"
+
+# Added by `rbenv init` on Tue Apr  8 16:19:31 JST 2025
+status --is-interactive; and rbenv init - --no-rehash fish | source
+
+# claude-code Bedrockの有効化
+# see: https://code.claude.com/docs/ja/amazon-bedrock
+if [ -f ~/.claudecode.fish ]; . ~/.claudecode.fish; end
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f ~/path.fish.inc ]; . ~/google-cloud-sdk/path.fish.inc; end
+
+# envrionment variables and paths...
+set -x PATH $PATH $HOME/bin
+## psql locale
+set -gx LC_MESSAGES en_US.UTF-8
+## nodejs signature
+set --export NODEJS_CHECK_SIGNATURES no
+## ruby
+set -g theme_display_ruby no
+## git global
+set -gx REPOS '~/project/github.com/'
+## composer installer
+set -gx PATH $HOME/.composer/vendor/bin $PATH
+## bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
+## Go
+set -x GOPATH $HOME/go
+set -x PATH $PATH $GOPATH/bin
+## angular-cli
+set -gx NG_CLI_ANALYTICS "false"
+
+# set alias
+alias dc="docker compose"
+alias python="python3"
+alias pip="pip3"
+alias ngtest="npx ng test --watch=false --main src/test.ts --include"
