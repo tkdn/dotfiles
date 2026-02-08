@@ -1,2 +1,13 @@
+# global
 dot_DS_Store
+
+# config/git
 private_dot_config/git/config
+
+# config/fish
+private_dot_config/private_fish/completions/*
+!private_dot_config/private_fish/completions/.keep
+private_dot_config/private_fish/conf.d/*
+!private_dot_config/private_fish/conf.d/.keep
+private_dot_config/private_fish/functions/__*
+private_dot_config/private_fish/functions/fisher.fish
