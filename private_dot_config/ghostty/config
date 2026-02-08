@@ -1,0 +1,17 @@
+# see: https://ghostty.org/docs/config/reference
+keybind = super+f=write_scrollback_file:open
+
+font-family = "PlemolJP Consle NF"
+font-size = 16
+font-feature = -dlig
+
+quick-terminal-position = top
+quick-terminal-screen = mouse
+maximize
+window-save-state = always
+
+shell-integration-features = no-cursor
+cursor-style = block
+cursor-style-blink = false
+
+macos-titlebar-proxy-icon = hidden
