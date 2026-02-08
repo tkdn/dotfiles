@@ -4,30 +4,6 @@ if not functions -q fisher
     fish -c fisher
 end
 
-###### pyenv start
-# python pyenv
-set --export PYENV_ROOT $HOME/.pyenv
-
-while set index (contains -i -- $HOME/.pyenv/shims $PATH)
-set -eg PATH[$index]; end; set -e index
-set -gx PATH $HOME/.pyenv/shims $PATH
-set -gx PYENV_SHELL fish
-
-command pyenv rehash 2>/dev/null
-
-function pyenv
-  set command $argv[1]
-  set -e argv[1]
-
-  switch "$command"
-  case rehash shell
-    source (pyenv "sh-$command" $argv|psub)
-  case '*'
-    command pyenv "$command" $argv
-  end
-end
-###### pyenv end
-
 #libpq
 # If you need to have libpq first in your PATH, run:
 fish_add_path /usr/local/opt/libpq/bin
