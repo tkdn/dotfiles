@@ -1,0 +1,25 @@
+{
+  "awsAuthRefresh": "aws sso login --profile {{ .claude.aws_profile }}",
+  "env": {
+    "AWS_PROFILE": "{{ .claude.aws_profile }}"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(go test:*)",
+      "Bash(go build:*)",
+      "Bash(golangci-lint:*)",
+      "Bash(git commit:*)",
+      "Bash(git add:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(bundle exec rubocop:*)",
+      "Bash(gh pr view:*)"
+    ],
+    "deny": [
+      "Bash(rm:*)",
+      "Read(.env.*)",
+      "Read(.env)",
+      "Read(.envrc)"
+    ]
+  },
+  "alwaysThinkingEnabled": false
+}
