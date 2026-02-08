@@ -46,7 +46,7 @@ status --is-interactive; and rbenv init - --no-rehash fish | source
 if [ -f ~/.claudecode.fish ]; . ~/.claudecode.fish; end
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f ~/path.fish.inc ]; . ~/google-cloud-sdk/path.fish.inc; end
+if [ -f ~/google-cloud-sdk/path.fish.inc ]; . ~/google-cloud-sdk/path.fish.inc; end
 
 # envrionment variables and paths...
 set -x PATH $PATH $HOME/bin
