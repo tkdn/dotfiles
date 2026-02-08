@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# コミット対象のファイル差分を取得
+diff_files=$(git diff --cached --name-only)
+
+# 差分に特定の文字列が含まれているかチェック
+for file in $diff_files; do
+    if git diff --cached "$file" | grep -qE '\+.*(fdescribe|ftest|fit)'; then
+        echo "Error: Commit contains forbidden keywords (fdescribe, ftest, fit) in file $file"
+        exit 1
+    fi
+done
+
+exit 0
