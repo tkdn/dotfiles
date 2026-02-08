@@ -1,0 +1,102 @@
+# UI default
+set line-graphics = utf-8
+
+# main view の左端にコミットIDを表示する
+set main-view = id date author:email-user commit-title:graph=yes,refs=yes
+
+# blame view の行数表示をON、intervalを1に
+set blame-view  = date:default author:email-user id:yes,color line-number:yes,interval=1 text
+
+# F で fetch (default: :toggle file-name / :toggle commit-title-refs)
+bind generic F      ?git fetch %(remote)
+bind main    F      ?git fetch %(remote)
+
+# U で pull
+bind generic U      ?git pull %(remote)
+
+# P で remote への push
+bind generic P      ?git push -u %(remote) %(repo:head)
+
+# ^ で reset --soft
+bind generic ^      ?git reset --soft HEAD^
+
+# H で reset --hard
+bind main    H      ?git reset --hard %(commit)
+bind diff    H      ?git reset --hard %(commit)
+bind refs    H      ?git reset --hard %(branch)
+
+# ! で revert
+bind main    !      ?git revert %(commit)
+bind main    <Esc>! ?git revert %(commit) -n
+
+# K で cherry-pick (default: 'C')
+bind main    K      ?git cherry-pick %(commit)
+bind diff    K      ?git cherry-pick %(commit)
+
+# Alt-k で cherry-pick -n (--no-commit)
+bind main    <Esc>k ?git cherry-pick -n %(commit)
+bind diff    <Esc>k ?git cherry-pick -n %(commit)
+
+# M で merge
+bind main    M      ?git merge %(branch)
+bind diff    M      ?git merge %(branch)
+bind refs    M      ?git merge %(branch)
+bind main    S      ?git merge --squash %(branch)
+bind diff    S      ?git merge --squash %(branch)
+bind refs    S      ?git merge --squash %(branch)
+bind main    <Esc>m ?git merge %(commit)
+bind diff    <Esc>m ?git merge %(commit)
+
+# R で rebase
+bind main    R      ?git rebase %(branch)
+bind diff    R      ?git rebase %(branch)
+bind refs    R      ?git rebase %(branch)
+bind main    <Esc>r ?git rebase %(commit)
+bind diff    <Esc>r ?git rebase %(commit)
+
+# I で rebase -i
+bind main    I      ?git rebase -i %(branch)
+bind diff    I      ?git rebase -i %(branch)
+bind refs    I      ?git rebase -i %(branch)
+bind main    <Esc>i ?git rebase -i %(commit)
+bind diff    <Esc>i ?git rebase -i %(commit)
+
+# ; で GitHub の該当コミットを開く ※要 hub インストール
+bind main    ;      @hub browse -- commit/%(commit)
+bind blame   ;      @hub browse -- commit/%(commit)
+bind diff    ;      @hub browse -- commit/%(commit)
+
+# ; で GitHub の該当ページを開く
+bind tree    ;      @hub browse -- blob/%(branch)/%(file)
+bind blob    ;      @hub browse -- blob/%(branch)/%(file)
+bind grep    ;      @hub browse -- blob/%(branch)/%(file)
+
+# Alt-; で GitHub の指定ブランチの該当ページを開く
+bind tree    <Esc>; @hub browse -- blob/"%(prompt Enter branch name: )"/%(file)
+bind blob    <Esc>; @hub browse -- blob/"%(prompt Enter branch name: )"/%(file)
+bind grep    <Esc>; @hub browse -- blob/"%(prompt Enter branch name: )"/%(file)
+
+# w で GitHub の該当ブランチの Pull Request 作成ページを開く ※要 hub インストール
+bind main    w      @hub browse -- compare/%(branch)?expand=1
+bind diff    w      @hub browse -- compare/%(branch)?expand=1
+bind refs    w      @hub browse -- compare/%(branch)?expand=1
+
+# status view で git now -s する
+bind status  n      ?git now -s
+# status view で git commit --amend する
+bind status  a      ?git commit --amend --no-edit
+
+# レビュー用ブラウズ
+bind main B !@hub browse -- commit/%(commit)
+bind diff B !@hub browse -- commit/%(commit)
+bind tree B !@hub browse -- tree/%(commit)/%(directory)
+bind blob B !@hub browse -- tree/%(commit)/%(file)
+
+# メインビューでコミットハッシュをコピー
+bind main C !@sh -c "git rev-parse --short %(commit) | tr -d '\n' | pbcopy"
+
+# メインビューでコミットタイトルをコピー
+bind main T !@sh -c "git show -s --format=%B %(commit) | tr -d '\n' | pbcopy"
+
+# メインビューでブランチ名をコピー
+bind refs <Ctrl-b> !@sh "echo '%(branch)' | pbcopy"
