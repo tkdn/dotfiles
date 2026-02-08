@@ -1,0 +1,16 @@
+{
+  "name": "tkdn-doftiles",
+  "version": "0.0.0",
+  "description": "tkdn dotfiles",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkdn/dotfiles.git"
+  },
+  "license": "MIT",
+  "author": "tkdn",
+  "devDependencies": {
+    "@secretlint/secretlint-rule-preset-recommend": "^11.3.1",
+    "lefthook": "^2.1.0",
+    "secretlint": "^11.3.1"
+  }
+}
