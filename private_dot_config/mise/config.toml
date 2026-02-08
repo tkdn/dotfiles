@@ -1,0 +1,14 @@
+[tools]
+ecspresso = "latest"
+node = "24"
+"npm:@anthropic-ai/claude-code" = "latest"
+pnpm = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]
+experimental = true
+
+[settings.node]
+gpg_verify = false
+
+[env]
