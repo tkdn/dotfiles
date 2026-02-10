@@ -9,4 +9,5 @@ pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
     co: pr checkout
+    browse-b: '!gh browse -b "$(git branch --show-current)"'
 version: "1"
