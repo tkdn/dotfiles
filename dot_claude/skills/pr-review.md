@@ -1,3 +1,9 @@
+---
+name: pr-review
+description: Review Pull Requests based on the repository file structure
+disable-model-invocation: true
+---
+
 # Pull Request Review for the Current Project
 
 Reads the Pull Request from the current branch in the current project, compares the diff against main, and reviews it from several perspectives.
