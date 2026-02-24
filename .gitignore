@@ -4,6 +4,7 @@ dot_DS_Store
 
 # config/git
 private_dot_config/git/config
+private_dot_config/git/config.bak.*
 
 # config/fish
 private_dot_config/private_fish/completions/*
