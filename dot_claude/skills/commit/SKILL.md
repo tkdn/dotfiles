@@ -1,10 +1,30 @@
 ---
 name: commit
-description: Creates logical, well-structured git commits following conventional commits
+description: Creates logical, well-structured git commits following conventional commits. Use this skill whenever the user wants to commit changes, stage files, write commit messages, or organize work into logical commits — even if they just say "commit this", "make a commit", or "let's commit".
 disable-model-invocation: true
 ---
 
-# Step
+# Conventional Commits format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`, `style`, `perf`, `ci`, `build`
+
+Examples:
+- `feat: send an email to the customer when a product is shipped`
+- `feat(api)!: send an email to the customer when a product is shipped`
+- `docs: correct spelling of CHANGELOG`
+- `fix: double submit issue on foobar feature`
+- `chore: tweak testcase name`
+
+# Steps
+
 ## 1. Review current changes
 
 ```bash
@@ -14,20 +34,21 @@ git diff
 git diff --cached
 ```
 
-## 2. Analyze changes and consider commit granularity
+## 2. Analyze changes and plan commits
 
-- Don't break CI or builds: each commit should keep the codebase in a working state
-- Make granularity easy for reviewers and readers to understand step by step
-- Consider dependencies: make commits in an order that respects dependencies
-- If a single file has multiple changes, stage only the relevant portions
-- Each commit must be self-contained and reversible
-- Focus commit messages on 'why' not just 'what'
-- Check context for PR review feedback:
-  - If changes are based on PR review comments, include the comment link in the commit body
-  - Format: Add link after the body description with a blank line separator
+Consider the following when deciding how to split changes into commits:
 
-## 3. Submit commit plan to user and obtain approval
-example:
+- Each commit must keep the codebase in a working state (don't break CI or builds)
+- Make granularity easy for reviewers to follow step by step
+- Respect dependency order: changes that others depend on come first
+- If a single file has multiple unrelated changes, stage only the relevant portions using `git add -p`
+- Each commit must be self-contained and independently revertable
+- Focus commit messages on *why*, not just *what*
+- If changes are based on PR review comments, include the comment link in the commit body (add after body with a blank line separator)
+
+## 3. Present commit plan and obtain approval
+
+Present the plan clearly, then wait for explicit approval before doing anything.
 
 ```
 Commit Plan:
@@ -50,28 +71,11 @@ Do you approve this commit plan? (y/n)
 If changes are needed, please specify what adjustments are required.
 ```
 
-IMPORTANT: Wait for explicit user approval before proceeding to commit creation.
+If the user requests changes to the plan, revise and re-present for approval. Repeat until approved.
 
-### Create Commit following conventional commits
+## 4. Create commits
 
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-example:
-
-- feat: send an email to the customer when a product is shipped
-- feat!: send an email to the customer when a product is shipped
-- feat(api)!: send an email to the customer when a product is shipped
-- docs: correct spelling of CHANGELOG
-- fix: double submit issue on foobar feature
-- chore: tweak testcase name
-
-## 4. Create commits after approval
+For each commit in the approved plan:
 
 ```bash
 git add [changed-files]
@@ -87,9 +91,9 @@ EOF
 )"
 ```
 
-## 5. Verify signed commit in eachs
+## 5. Verify each signed commit
 
-After commited do following and verify:
+After each commit, verify it was signed correctly:
 
 ```bash
 git verify-commit HEAD || exit 1
