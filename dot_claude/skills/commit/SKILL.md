@@ -22,6 +22,9 @@ git diff --cached
 - If a single file has multiple changes, stage only the relevant portions
 - Each commit must be self-contained and reversible
 - Focus commit messages on 'why' not just 'what'
+- Check context for PR review feedback:
+  - If changes are based on PR review comments, include the comment link in the commit body
+  - Format: Add link after the body description with a blank line separator
 
 ## 3. Submit commit plan to user and obtain approval
 example:
@@ -73,10 +76,13 @@ example:
 ```bash
 git add [changed-files]
 git commit -m "$(cat <<'EOF'
-fix: double submit issue on foobar feature
+<type>(<scope>): <description>
 
-- detailed description
-- https://someissue.example/issues/123
+<detailed explanation of what was changed and why>
+
+<GitHub comment link if applicable>
+
+Co-Authored-By: <reviewer-name> <email> (if significant contribution)
 EOF
 )"
 ```
