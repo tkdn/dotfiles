@@ -1,258 +1,278 @@
 ---
 name: pr-review
-description: Review Pull Requests based on the repository file structure
+description: >
+  Review a Pull Request on the current branch and output a structured Markdown report.
+  Use this skill whenever the user asks to review a PR, check a pull request, do a code review,
+  レビューして, PRを確認して, or any similar request — even if they don't say "PR review" explicitly.
+  Covers security, performance, code quality, testing, and framework-specific concerns
+  (Ruby on Rails, Go, Python, Java, React, Angular, Vue, Next.js, Nuxt).
+  Supports monorepos with multiple tech stacks.
 disable-model-invocation: true
 ---
 
-# Pull Request Review for the Current Project
+# Pull Request Review
 
-Reads the Pull Request from the current branch in the current project, compares the diff against main, and reviews it from several perspectives.
+Review the PR on the current branch against main, then write a structured Markdown report.
 
-## Tech Stack Detection
+## Step 1: Detect Tech Stack
 
-First, detect the project's tech stack:
+Run the bundled detection script from the repository root:
 
 ```bash
-# Detect tech stack
-BACKEND_STACK=""
-FRONTEND_STACK=""
-
-# Detect backend technology
-if [ -f "Gemfile" ]; then
-  BACKEND_STACK="Ruby on Rails"
-elif [ -f "go.mod" ]; then
-  BACKEND_STACK="Go"
-elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
-  BACKEND_STACK="Python"
-elif [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
-  BACKEND_STACK="Java"
-fi
-
-# Detect frontend technology
-if [ -f "package.json" ]; then
-  if grep -q "\"react\"" package.json; then
-    FRONTEND_STACK="React"
-  elif grep -q "\"vue\"" package.json; then
-    FRONTEND_STACK="Vue"
-  elif grep -q "\"@angular/core\"" package.json; then
-    FRONTEND_STACK="Angular"
-  elif grep -q "\"next\"" package.json; then
-    FRONTEND_STACK="Next.js"
-  elif grep -q "\"nuxt\"" package.json; then
-    FRONTEND_STACK="Nuxt"
-  else
-    FRONTEND_STACK="Node.js"
-  fi
-fi
-
-# Display detection results
-echo "Detected tech stack:"
-[ -n "$BACKEND_STACK" ] && echo "- Backend: $BACKEND_STACK"
-[ -n "$FRONTEND_STACK" ] && echo "- Frontend: $FRONTEND_STACK"
-
-# If no tech stack was detected
-if [ -z "$BACKEND_STACK" ] && [ -z "$FRONTEND_STACK" ]; then
-  echo "- Could not determine the tech stack. Reviewing from a general perspective."
-fi
-
-# If multiple tech stacks are detected, ask the user
-REVIEW_SCOPE="both"
-if [ -n "$BACKEND_STACK" ] && [ -n "$FRONTEND_STACK" ]; then
-  echo ""
-  echo "This project uses multiple tech stacks."
-  echo "Which perspective would you like to review from?"
-  echo "(1) Review from both perspectives"
-  echo "(2) Backend perspective only"
-  echo "(3) Frontend perspective only"
-  read -p "Choice (1-3): " REVIEW_CHOICE
-
-  case $REVIEW_CHOICE in
-    2) REVIEW_SCOPE="backend" ;;
-    3) REVIEW_SCOPE="frontend" ;;
-    *) REVIEW_SCOPE="both" ;;
-  esac
-fi
+bash "$(dirname "$0")/../.claude/skills/pr-review/scripts/detect_stack.sh"
 ```
 
-## Pull Request Review
+> If the skill path is unknown, locate the script with:
+> `find ~/.claude/skills/pr-review/scripts -name detect_stack.sh`
 
-Load the Pull Request description by running:
+The script prints lines like `BACKEND:Ruby on Rails` and `FRONTEND:Angular`.
+Collect all results — a monorepo may have multiple backends or frontends.
+If nothing is detected, proceed with a general review.
+
+**You decide the review scope** based on what's found — no need to ask the user.
+If both backend and frontend stacks are detected, review both.
+
+## Step 2: Load PR Description
 
 ```bash
 gh pr view
 ```
 
-## Review Perspectives
-
-There are three severity levels for review findings: Critical, Warning, and Info. Determine the level based on the nature of the finding.
-
-### Common Perspectives (All Projects)
-
-#### 1. Code Quality (Info/Warning)
-- **Single Responsibility Principle**: Are classes and methods focused on a single responsibility?
-- **Duplicate Code**: Is the DRY principle being followed?
-- **YAGNI**: Is the design over-engineered with unnecessary abstractions or premature optimizations?
-- **Defensive Design**: Is the interface kept as narrow as needed? Is the design structured to prevent misuse?
-
-#### 2. Harmony with the Project (Warning)
-- **Conventions**: If the project has documents containing conventions, does the code comply with them?
-- **Harmony**: Does the code harmonize and cooperate with the existing design and code of the project?
-- **Deviation**: Does the code deviate from the existing structure of the project? Does it impose unnecessary cognitive load on teammates?
-
-#### 3. Error Handling (Warning)
-- **Exception Handling**: Are there any uncaught exceptions or missing error handling?
-- **Validation**: Are appropriate validation rules in place for save operations?
-
-#### 4. Testing (Info)
-- **Test Presence**: Are tests added appropriately—neither too few nor too many—for new features and bug fixes?
-- **Test Coverage**: Are critical paths covered? Are unnecessary test cases avoided?
-- **Test Quality**: Are assertions too coarse-grained? Are they appropriate and proportionate to the test cases?
-
-#### 5. General Security (Critical/Warning)
-- **Sensitive Information Exposure**: Are passwords, API keys, or tokens hardcoded?
-- **Log Output**: Is sensitive information logged in production environments?
-- **Environment Variables**: Are there hardcoded environment-specific settings?
-- **Dependency Vulnerabilities**: Are any dependencies with known security alerts being used?
-
-#### 6. Other (Info/Warning)
-- **Backward Compatibility**: Are there any breaking changes to existing APIs?
-
-### Backend-Specific Perspectives
-
-This section applies when `REVIEW_SCOPE` is "backend" or "both".
-
-#### 1. Security (Critical)
-- **SQL Injection**: Is user input being passed directly into SQL queries?
-- **Authentication & Authorization**: Are unauthorized actions being executed?
-
-#### 2. Performance (Warning)
-- **N+1 Queries**: Are there missing Eager Loading or potential N+1 query occurrences?
-- **Unnecessary Queries**: Are there DB accesses inside loops?
-- **Indexes**: Are indexes considered for columns used in search conditions?
-- **Caching**: Is in-memory caching considered for frequently accessed data?
-
-#### 3. API Design (Info/Warning)
-- **RESTful Design**: Does the API conform to REST principles?
-- **Endpoint Naming**: Are consistent naming conventions used?
-
-### Frontend-Specific Perspectives
-
-This section applies when `REVIEW_SCOPE` is "frontend" or "both".
-
-#### 1. Security (Critical)
-- **XSS**: Is there unescaped user input or output?
-  - React: Inappropriate use of `dangerouslySetInnerHTML`
-  - Angular: Use of `innerHTML` without `DomSanitizer`
-  - Vue: Inappropriate use of `v-html`
-
-#### 2. Performance (Warning)
-- **Re-render Optimization**: Are there unnecessary re-renders?
-  - React: Appropriate use of `useMemo`, `useCallback`, `React.memo`
-  - Angular: Leveraging `OnPush` Change Detection strategy
-  - Vue: Appropriate use of `computed` properties
-- **Bundle Size**: Is lazy loading and tree-shaking considered?
-- **Large Lists**: Is virtual scrolling considered for displaying large amounts of data?
-
-#### 3. Memory Management (Warning)
-- **Resource Cleanup**: Are event listeners and Subscriptions being properly released?
-  - React: Cleanup functions in `useEffect`
-  - Angular: Unsubscribing in `ngOnDestroy`
-  - Vue: Cleanup in `onUnmounted`
-
-#### 4. Accessibility (Info)
-- **ARIA Attributes**: Are appropriate ARIA attributes set?
-- **Keyboard Navigation**: Is the UI fully operable with keyboard only?
-
-## Output
-
-Retrieve the PR number to determine the filename, and output to the repository root of the project:
+Also get the PR number for the output filename:
 
 ```bash
-# Get the PR number
-PR_NUMBER=$(gh pr view --json number -q .number)
+PR_NUMBER=$(gh pr view --json number -q .number 2>/dev/null || date +%Y%m%d-%H%M%S)
+```
 
-# Use a timestamp if the PR number cannot be retrieved
-if [ -z "$PR_NUMBER" ]; then
-  PR_NUMBER=$(date +%Y%m%d-%H%M%S)
-fi
+## Step 3: Review the Diff
 
-OUTPUT_FILE="pr-review-${PR_NUMBER}.md"
+```bash
+gh pr diff
+```
+
+Apply the review perspectives below based on the detected stacks.
+
+---
+
+## Review Perspectives
+
+Severity levels: **Critical** (must fix), **Warning** (should fix), **Info** (consider).
+
+### Common (All Projects)
+
+#### Code Quality (Info/Warning)
+- **Single Responsibility**: Are classes and methods focused on one thing?
+- **DRY**: Is duplicate logic extracted appropriately?
+- **YAGNI**: Are there unnecessary abstractions or premature optimizations?
+- **Defensive Design**: Is the interface as narrow as needed? Does it prevent misuse?
+
+#### Harmony with the Project (Warning)
+- **Conventions**: Does the code follow any documented project conventions?
+- **Consistency**: Does it fit the existing design patterns and style?
+- **Cognitive Load**: Will teammates find this natural to read and maintain?
+
+#### Error Handling (Warning)
+- **Exception Handling**: Are there uncaught exceptions or missing error paths?
+- **Validation**: Are inputs validated appropriately at boundaries?
+
+#### Testing (Info)
+- **Presence**: Are tests added for new features and bug fixes?
+- **Coverage**: Are critical paths covered without over-testing trivial code?
+- **Quality**: Are assertions specific and proportionate?
+
+#### Security (Critical/Warning)
+- **Secrets**: Are passwords, API keys, or tokens hardcoded?
+- **Log Output**: Is sensitive data logged in production?
+- **Environment Config**: Are environment-specific values hardcoded?
+- **Dependencies**: Are any dependencies flagged with known security issues?
+
+#### Naming (Info/Warning)
+- **Domain Accuracy**: Do names accurately reflect the domain concepts they represent? Are any terms misleading or imprecise?
+- **Consistency with Codebase**: Are names chosen from the vocabulary already used in the codebase, rather than introducing synonyms for existing concepts?
+- **Clarity**: Are names self-explanatory without needing a comment to clarify their intent?
+
+#### Other (Info/Warning)
+- **Backward Compatibility**: Do any changes break existing API contracts?
+
+---
+
+### Backend: Ruby on Rails
+
+#### Security (Critical)
+- **SQL Injection**: Is user input passed directly into SQL queries?
+- **Auth**: Are authorization checks present and correct?
+
+#### Performance (Warning)
+- **N+1 Queries**: Are associations eager-loaded where needed?
+- **Queries in Loops**: Are DB calls inside iteration?
+- **Indexes**: Are indexes considered for new query conditions?
+- **Caching**: Is in-memory caching used for hot data?
+
+#### API Design (Info/Warning)
+- **RESTful**: Does the API follow REST conventions?
+- **Naming**: Are endpoints named consistently?
+
+---
+
+### Backend: Go
+
+#### Security (Critical)
+- **Input Validation**: Is external input properly validated and sanitized?
+- **Auth**: Are authentication and authorization enforced?
+
+#### Performance (Warning)
+- **Goroutine Leaks**: Are goroutines properly terminated?
+- **Mutex Usage**: Are shared resources protected correctly?
+- **Allocations**: Are there unnecessary allocations in hot paths?
+
+#### Error Handling (Warning)
+- **Ignored Errors**: Are errors checked everywhere they should be?
+- **Error Wrapping**: Are errors wrapped with context using `fmt.Errorf` or `errors.As`?
+
+---
+
+### Backend: Python
+
+#### Security (Critical)
+- **Injection**: Is user input sanitized before use in queries or shell commands?
+- **Auth**: Are auth checks present?
+
+#### Performance (Warning)
+- **ORM N+1**: Are ORM queries optimized (e.g., `select_related`, `prefetch_related`)?
+- **Blocking I/O**: Is blocking I/O used in async contexts?
+
+---
+
+### Backend: Java
+
+#### Security (Critical)
+- **SQL Injection**: Is parameterized queries or ORM used?
+- **Deserialization**: Is untrusted data deserialized?
+
+#### Performance (Warning)
+- **Connection Pooling**: Are DB connections managed correctly?
+- **Memory Leaks**: Are resources closed (streams, connections)?
+
+---
+
+### Frontend: React
+
+#### Security (Critical)
+- **XSS**: Is `dangerouslySetInnerHTML` used with unsanitized input?
+
+#### Performance (Warning)
+- **Re-renders**: Are `useMemo`, `useCallback`, `React.memo` used appropriately?
+- **Bundle Size**: Is lazy loading considered?
+- **Large Lists**: Is virtualization considered for long lists?
+
+#### Memory Management (Warning)
+- **Effect Cleanup**: Do `useEffect` hooks clean up subscriptions and timers?
+
+#### Accessibility (Info)
+- **ARIA**: Are appropriate ARIA attributes set?
+- **Keyboard**: Is the UI fully operable with a keyboard?
+
+---
+
+### Frontend: Angular
+
+#### Security (Critical)
+- **XSS**: Is `innerHTML` used without `DomSanitizer`?
+
+#### Performance (Warning)
+- **Change Detection**: Is `OnPush` strategy used where appropriate?
+- **Bundle Size**: Is lazy loading of modules considered?
+- **Large Lists**: Is `CdkVirtualScrollViewport` considered?
+
+#### Memory Management (Warning)
+- **Subscriptions**: Are Subscriptions unsubscribed in `ngOnDestroy`, or is `takeUntilDestroyed` / `async` pipe used?
+
+#### Accessibility (Info)
+- **ARIA**: Are appropriate ARIA attributes set?
+- **Keyboard**: Is the UI fully operable with a keyboard?
+
+---
+
+### Frontend: Vue / Nuxt
+
+#### Security (Critical)
+- **XSS**: Is `v-html` used with unsanitized input?
+
+#### Performance (Warning)
+- **Computed Properties**: Is `computed` used for derived state instead of methods?
+- **Bundle Size**: Is lazy loading of components and routes considered?
+- **Large Lists**: Is virtual scrolling considered?
+
+#### Memory Management (Warning)
+- **Cleanup**: Are watchers and event listeners cleaned up in `onUnmounted`?
+
+#### Accessibility (Info)
+- **ARIA**: Are appropriate ARIA attributes set?
+- **Keyboard**: Is the UI fully operable with a keyboard?
+
+---
+
+### Frontend: Next.js
+
+#### Security (Critical)
+- **XSS**: Is `dangerouslySetInnerHTML` used with unsanitized input?
+- **Server Actions**: Is input validated in Server Actions?
+
+#### Performance (Warning)
+- **Rendering Strategy**: Is the right rendering mode chosen (SSR/SSG/ISR/CSR)?
+- **Image Optimization**: Is the `next/image` component used?
+- **Bundle Size**: Are dynamic imports used where appropriate?
+
+#### Memory Management (Warning)
+- **Effect Cleanup**: Do client-side `useEffect` hooks clean up properly?
+
+---
+
+## Step 4: Output
+
+Write the report to the repository root:
+
+```
+pr-review-${PR_NUMBER}.md
 ```
 
 ### Output Rules
 
-- **Critical**: Display all (no limit)
-- **Warning**: Display up to 10, prioritized by severity
-- **Info**: Display up to 5, prioritized by severity
-- Keep descriptions concise and avoid verbose phrasing
-- Write code examples in the language of the detected tech stack
+- **Critical**: Show all findings
+- **Warning**: Show up to 10, prioritized by severity
+- **Info**: Show up to 5, prioritized by severity
+- Keep descriptions concise; avoid verbose phrasing
+- Write code examples in the detected tech stack's language
 
 ### Output Format
-
-The following is an example of the output format:
 
 ```markdown
 # Review Summary
 
-- Critical: n item(s) (all displayed)
-- Warning: n item(s) (up to 10 displayed)
-- Info: n item(s) (up to 5 displayed)
+- Critical: N item(s) (all displayed)
+- Warning: N item(s) (up to 10 displayed)
+- Info: N item(s) (up to 5 displayed)
+
+---
 
 # Review Items
 
-## [Critical]: Query parameter passed directly into WHERE clause
+## [Critical]: <title>
 
-- **Location**: app/controllers/users_controller.rb:12
-- **Description**: User input is passed directly as shown below, posing a risk of SQL injection.
+- **Location**: path/to/file.rb:12
+- **Description**: <concise explanation>
 
-```ruby
+```<lang>
 # Affected code
-user = User.where("name = '#{params[:name]}'")
+...
 ```
 
-```ruby
+```<lang>
 # Suggested fix
-user = User.where(name: params[:name])
+...
 ```
 
-## [Warning]: Subscription not released
+## [Warning]: <title>
 
-- **Location**: src/app/components/user-list/user-list.component.ts:25
-- **Description**: The Subscription is not released in ngOnDestroy, which may cause a memory leak.
-
-```typescript
-// Affected code
-ngOnInit() {
-  this.userService.getUsers().subscribe(users => {
-    this.users = users;
-  });
-}
-```
-
-```typescript
-// Suggested fix
-private subscription: Subscription;
-
-ngOnInit() {
-  this.subscription = this.userService.getUsers().subscribe(users => {
-    this.users = users;
-  });
-}
-
-ngOnDestroy() {
-  this.subscription?.unsubscribe();
-}
-```
-
-## [Info]: Insufficient test cases
-
-- **Location**: src/app/services/auth.service.spec.ts
-- **Description**: There are no test cases for error handling on login failure.
-
-```typescript
-// Test case to add
-it('should handle login error', () => {
-  // Test to verify behavior on error
-});
-```
+...
 ```
