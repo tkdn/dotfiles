@@ -34,6 +34,26 @@ git diff
 git diff --cached
 ```
 
+## 1.5. Safety check: Verify not on main branch
+
+After reviewing the current branch, check if you're on a protected branch (main or master):
+
+- If the current branch is `main` or `master`, **STOP immediately** and warn the user:
+  ```
+  ⚠️ WARNING: You are currently on the '${BRANCH_NAME}' branch.
+
+  It's recommended to create feature branches for new work rather than
+  committing directly to main/master.
+
+  Would you like to:
+  1. Create a new branch and switch to it
+  2. Continue anyway (not recommended)
+  3. Cancel this operation
+  ```
+  Wait for the user's response before proceeding.
+
+- If on any other branch, proceed to Step 2.
+
 ## 2. Analyze changes and plan commits
 
 Consider the following when deciding how to split changes into commits:
