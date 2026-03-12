@@ -45,8 +45,8 @@ set -x PATH $PATH $GOPATH/bin
 ## angular-cli
 set -gx NG_CLI_ANALYTICS "false"
 
-# set alias
-alias dc="docker compose"
-alias python="python3"
-alias pip="pip3"
-alias ngtest="npx ng test --watch=false --main src/test.ts --include"
+# set abbr
+abbr --add dc "docker compose"
+abbr --add python "python3"
+abbr --add pip "pip3"
+abbr --add ngtest "npx ng test --watch=false --main src/test.ts --include"
