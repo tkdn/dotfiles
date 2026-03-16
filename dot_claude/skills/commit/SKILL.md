@@ -97,6 +97,8 @@ If the user requests changes to the plan, revise and re-present for approval. Re
 
 For each commit in the approved plan:
 
+`<current-model-name>` にはシステムプロンプトに記載されている現在のモデル名（例: `Claude Sonnet 4.6`）を使うこと。`Co-Authored-By` トレーラーは**必ず**含めること。
+
 ```bash
 git add [changed-files]
 git commit -m "$(cat <<'EOF'
@@ -106,7 +108,7 @@ git commit -m "$(cat <<'EOF'
 
 <GitHub comment link if applicable>
 
-Co-Authored-By: <reviewer-name> <email> (if significant contribution)
+Co-Authored-By: <current-model-name> <noreply@anthropic.com>
 EOF
 )"
 ```
