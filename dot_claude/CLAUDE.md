@@ -5,6 +5,15 @@
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
 
+# Bug Fix Workflow
+
+When fixing a bug, always follow this order:
+
+1. **Write a regression test first** — reproduce the bug and confirm it FAILs
+2. **Implement the fix** — confirm the test PASSes
+
+Apply the same order when writing a plan in plan mode.
+
 # Rules for Each Programming Language
 
 ## Ruby（Rails） Projects
