@@ -100,3 +100,6 @@ bind main T !@sh -c "git show -s --format=%B %(commit) | tr -d '\n' | pbcopy"
 
 # メインビューでブランチ名をコピー
 bind refs <Ctrl-b> !@sh "echo '%(branch)' | pbcopy"
+
+# メインビューで fixup
+bind main    X     ?git fixup %(commit)
