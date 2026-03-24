@@ -143,6 +143,10 @@ For this project the template has these sections — use them if the template is
 
 Keep each section concise. Prefer bullet points over prose where appropriate.
 
+**Formatting rules for the PR body:**
+- Do NOT use bold (`**text**`) anywhere in the PR body
+- If you feel the urge to bold something, it's a sign the text is too long or the structure is wrong — simplify instead
+
 Write the drafted PR body to a temporary file and open it in VS Code for the user to review and edit directly:
 
 ```bash
