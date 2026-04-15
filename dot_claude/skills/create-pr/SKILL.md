@@ -187,9 +187,16 @@ gh pr create \
 
 If the project uses a different default base branch, use that instead.
 
-After creation, output the PR URL.
+After creation, take the URL returned by `gh pr create` and extract the PR number from it.
+Present it as a markdown link in this format:
+
+```
+[PR #<number>](https://github.com/<owner>/<repo>/pull/<number>)
+```
+
+Example: `[PR #797](https://github.com/classi/kuroko-api/pull/797)`
 
 ## Step 6: Done
 
-Tell the user the PR is open and share the URL.
+Tell the user the PR is open and share the URL as a markdown link (see Step 5 format).
 The temporary files (`tmp/pr-self-review.md`, `tmp/pr-draft.md`) can be left as-is — they will be overwritten on the next run and are covered by `.gitignore`.
