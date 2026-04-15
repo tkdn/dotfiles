@@ -1,7 +1,7 @@
 {
   "awsAuthRefresh": "aws sso login --profile {{ .claude.aws_profile }}",
   "env": {
-    "AWS_PROFILE": "{{ .claude.aws_profile }}"
+    "AWS_PROFILE": "claudecode_Developer"
   },
   "permissions": {
     "allow": [
@@ -15,14 +15,55 @@
       "Bash(bundle exec rspec:*)",
       "Bash(bundle exec rubocop:*)",
       "Bash(gh pr view:*)",
-      "Bash(find *)",
-      "Bash(grep *)"
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh run view:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(exit 1)",
+      "Bash(python3 -:*)",
+      "Bash(code:*)"
     ],
     "deny": [
       "Bash(rm:*)",
       "Read(.env.*)",
       "Read(.env)",
-      "Read(.envrc)"
+      "Read(.envrc)",
+      "Bash(git push:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "ruby-lsp@claude-plugins-official": true
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "ﾜｧ…",
+      "なんとかなれーっ",
+      "ﾊｰｯ!!!",
+      "ヤーッ！",
+      "討伐ッ！",
+      "うま…",
+      "泣いちゃった…",
+      "やだッ…",
+      "こわいよォ…",
+      "しんど…",
+      "どうして…",
+      "えらいッ",
+      "がんばったねッ",
+      "うれしいッ",
+      "でかつよ…",
+      "草むしり検定…",
+      "合格ッ",
+      "不合格…",
+      "やりなおしッ",
+      "ギチギチ…",
+      "オデ…",
+      "フッ…",
+      "すごいッ",
+      "イヤッ",
+      "むちゃうま…"
     ]
   },
   "alwaysThinkingEnabled": false
