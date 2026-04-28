@@ -5,6 +5,17 @@
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
 
+# General Development Workflow
+
+For any non-trivial task, follow these four phases:
+
+1. **Explore** (Plan Mode) — Read files, understand the codebase, answer questions without making changes
+2. **Plan** (Plan Mode) — Create a detailed implementation plan. Press `Ctrl+G` to open and edit the plan before proceeding
+3. **Implement** (Normal Mode) — Write code, verify against the plan
+4. **Commit** — Commit with a descriptive message
+
+Skip planning for small, clearly-scoped tasks (typo fixes, single-line changes).
+
 # Bug Fix Workflow
 
 When fixing a bug, always follow this order:
@@ -13,6 +24,13 @@ When fixing a bug, always follow this order:
 2. **Implement the fix** — confirm the test PASSes
 
 Apply the same order when writing a plan in plan mode.
+
+# Context Management
+
+- Run `/clear` between unrelated tasks to prevent context pollution
+- After correcting Claude twice on the same issue, `/clear` and write a better initial prompt
+- Use subagents for investigation tasks to avoid filling the main context window
+- Keep CLAUDE.md concise — if a rule gets lost in a long file, Claude ignores it
 
 # Rules for Each Programming Language
 
