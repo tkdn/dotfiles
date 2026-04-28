@@ -51,58 +51,7 @@ Please push the branch first:
 Then run this skill again.
 ```
 
-## Step 2: Self-review with pr-review
-
-Run the `pr-review` skill against the current branch **before** writing the PR description.
-
-> This step catches issues early and surfaces items to include in "見てほしいところ".
-
-Since pr-review targets an already-opened PR but we don't have one yet, review the diff directly:
-
-```bash
-git diff main...HEAD
-```
-
-Apply the pr-review perspectives (Code Quality, Harmony, Error Handling, Testing, Security, Naming) to this diff.
-Write the review findings to a temporary file in the repository's `tmp/` directory (already in `.gitignore`):
-
-```bash
-mkdir -p tmp
-# write findings to tmp/pr-self-review.md
-```
-
-### Present findings to the user
-
-Write the review findings to the temporary file, then open it in VS Code:
-
-```bash
-code tmp/pr-self-review.md
-```
-
-After opening, present a concise summary in the conversation:
-
-```
-## Self-Review Results
-
-### Critical (must fix before PR)
-- ...
-
-### Warning (should consider)
-- ...
-
-### Info (optional improvements)
-- ...
-
-Full details are open in VS Code (tmp/pr-self-review.md).
-Do you want to fix any of these before creating the PR?
-If yes, please make the changes and let me know when ready.
-If no, I'll proceed with creating the PR.
-```
-
-**STOP HERE. Do NOT proceed to Step 3 until the user explicitly responds.**
-Wait for the user's response. If they want to fix issues, stop here and let them make changes. Resume when they say they're ready.
-
-## Step 3: Gather context
+## Step 2: Gather context
 
 Collect information to fill the PR template:
 
@@ -123,7 +72,7 @@ Also check if a PR template exists:
 cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
 ```
 
-## Step 4: Draft the PR body
+## Step 3: Draft the PR body
 
 Fill in each section of the PR template based on the context gathered above.
 If `.github/PULL_REQUEST_TEMPLATE.md` exists, follow its structure exactly.
@@ -136,9 +85,9 @@ For this project the template has these sections — use them if the template is
 | 関連リンク | Extract from branch name, commit messages, or leave blank |
 | やりたいこと | Summarize the goal of this branch in 1–2 sentences |
 | なぜなのか | Explain the motivation or problem being solved |
-| やったこと | List concrete changes made (files, logic, DB, etc.) |
+| やったこと | List concrete changes made (files, logic, DB, etc.). Do NOT include specific file counts (e.g. "32ファイル") — describe what changed, not how many. |
 | やらなかったこと | Note explicitly out-of-scope items if relevant |
-| 見てほしいところ | Include any Warning/Critical items from the self-review, plus genuinely uncertain areas |
+| 見てほしいところ | Areas of uncertainty or design decisions you are unsure about. Self-review runs after PR creation, so leave blank or provisional for now |
 | 確認方法 | Describe how to verify the changes work |
 
 Keep each section concise. Prefer bullet points over prose where appropriate.
@@ -146,6 +95,7 @@ Keep each section concise. Prefer bullet points over prose where appropriate.
 **Formatting rules for the PR body:**
 - Do NOT use bold (`**text**`) anywhere in the PR body
 - If you feel the urge to bold something, it's a sign the text is too long or the structure is wrong — simplify instead
+- Do NOT include specific file counts or numbers (e.g. "32ファイル", "15 files") — describe what changed, not how many
 
 Write the drafted PR body to a temporary file and open it in VS Code for the user to review and edit directly:
 
@@ -165,14 +115,14 @@ PR body is open in VS Code (tmp/pr-draft.md).
 Please review and edit as needed, then let me know when ready.
 ```
 
-**STOP HERE. Do NOT proceed to Step 5 until the user explicitly confirms they are ready.**
+**STOP HERE. Do NOT proceed to Step 4 until the user explicitly confirms they are ready.**
 Wait for confirmation. Read the file again before proceeding to pick up any edits the user made:
 
 ```bash
 cat tmp/pr-draft.md
 ```
 
-## Step 5: Create the PR
+## Step 4: Create the PR
 
 Once confirmed, create the PR as a **draft** and assign it to the current user:
 
@@ -196,7 +146,42 @@ Present it as a markdown link in this format:
 
 Example: `[PR #797](https://github.com/classi/kuroko-api/pull/797)`
 
+## Step 5: Self-review via Agent
+
+Once the PR is created, spawn a separate Agent to perform a self-review.
+Because you hold the full conversation context, delegating to a context-free Agent produces a more objective review.
+
+Construct the Agent prompt in this form:
+
+```
+Review the diff of PR #<number> from the following perspectives:
+Code Quality, Harmony (consistency with existing code), Error Handling, Testing, Security, Naming
+
+Fetch the diff with:
+gh pr diff <number>
+
+Report findings in this format:
+
+## Critical (must fix before merge)
+- ...
+
+## Warning (should consider)
+- ...
+
+## Info (optional improvements)
+- ...
+```
+
+Present the Agent's findings to the user as-is, then ask:
+
+```
+Here are the self-review results. Please fix anything that needs attention and let me know.
+If everything looks good, we are done.
+```
+
+**STOP HERE. Do NOT proceed until the user explicitly responds.**
+
 ## Step 6: Done
 
-Tell the user the PR is open and share the URL as a markdown link (see Step 5 format).
-The temporary files (`tmp/pr-self-review.md`, `tmp/pr-draft.md`) can be left as-is — they will be overwritten on the next run and are covered by `.gitignore`.
+Share the PR URL as a markdown link (see Step 4 format).
+`tmp/pr-draft.md` can be left as-is — it will be overwritten on the next run and is covered by `.gitignore`.
