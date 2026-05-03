@@ -9,8 +9,8 @@
   "license": "MIT",
   "author": "tkdn",
   "devDependencies": {
-    "@secretlint/secretlint-rule-preset-recommend": "^11.3.1",
-    "lefthook": "^2.1.0",
-    "secretlint": "^11.3.1"
+    "@secretlint/secretlint-rule-preset-recommend": "^12.3.1",
+    "lefthook": "^2.1.6",
+    "secretlint": "^12.3.1"
   }
 }
