@@ -1,4 +1,4 @@
 pre-commit:
   commands:
     secretlint:
-      run: pnpm secretlint **/*
+      run: pnpm secretlint {staged_files}
