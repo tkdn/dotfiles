@@ -144,7 +144,7 @@ Present it as a markdown link in this format:
 [PR #<number>](https://github.com/<owner>/<repo>/pull/<number>)
 ```
 
-Example: `[PR #797](https://github.com/classi/kuroko-api/pull/797)`
+Example: `[PR #797](https://github.com/tkdn/dotfiles/pull/1)`
 
 ## Step 5: Self-review via Agent
 
