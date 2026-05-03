@@ -12,8 +12,10 @@
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPozDmL1rhNqi9f7xnC805NHhqophKqznj+H5l9vlsC1
 [gpg]
 	format = ssh
+{{ if eq .chezmoi.os "darwin" }}
 [gpg "ssh"]
 	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+{{ end }}
 [commit]
 	gpgsign = true
 [alias]
@@ -57,3 +59,4 @@ fixup = "!f() { git commit --fixup \"$1\" && GIT_SEQUENCE_EDITOR=true git rebase
 	allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 [ghq]
 	root = ~/projects
+	root = ~/ghq
