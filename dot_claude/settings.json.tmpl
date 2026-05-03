@@ -1,8 +1,10 @@
 {
-  "awsAuthRefresh": "aws sso login --profile {{ .claude.aws_profile }}",
+  {{ if env "CLAUDE_AWS_PROFILE" }}
+  "awsAuthRefresh": "aws sso login --profile {{ env "CLAUDE_AWS_PROFILE" }}",
   "env": {
-    "AWS_PROFILE": "claudecode_Developer"
+    "AWS_PROFILE": {{ env "CLAUDE_AWS_PROFILE"  }}
   },
+  {{ end }}
   "permissions": {
     "allow": [
       "Bash(go test:*)",
