@@ -14,8 +14,10 @@ set -gx CPPFLAGS "-I/opt/homebrew/opt/readline/include"
 set -gx PKG_CONFIG_PATH "/opt/homebrew/opt/libffi/lib/pkgconfig"
 # set -gx RUBY_CONFIGURE_OPTS "--with-openssl-dir=(brew --prefix openssl@3)"
 
+if type -q rbenv
 # Added by `rbenv init` on Tue Apr  8 16:19:31 JST 2025
 status --is-interactive; and rbenv init - --no-rehash fish | source
+end
 
 # claude-code Bedrockの有効化
 # see: https://code.claude.com/docs/ja/amazon-bedrock
