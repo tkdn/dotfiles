@@ -60,3 +60,6 @@ abbr --add ngtest "npx ng test --watch=false --main src/test.ts --include"
 set -x LESS -R
 set -x LESSCHARSET utf-8
 set -x LC_ALL en_US.UTF-8
+
+# bobthefish not use Powerline fonts
+set -g theme_powerline_fonts no
