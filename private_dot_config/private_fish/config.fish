@@ -1,3 +1,6 @@
+# homebrew
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
+
 if not functions -q fisher
     set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
     curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
@@ -52,3 +55,8 @@ abbr --add dc "docker compose"
 abbr --add python "python3"
 abbr --add pip "pip3"
 abbr --add ngtest "npx ng test --watch=false --main src/test.ts --include"
+
+# LESS
+set -x LESS -R
+set -x LESSCHARSET utf-8
+set -x LC_ALL en_US.UTF-8
