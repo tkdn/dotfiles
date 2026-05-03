@@ -2,6 +2,7 @@ README.md
 **/README.md
 
 pnpm-lock.yaml
+pnpm-workspace.yaml
 package.json
 lefthook.yml
 node_modules
