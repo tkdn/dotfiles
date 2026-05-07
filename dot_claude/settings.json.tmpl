@@ -1,8 +1,8 @@
 {
-  {{ if env "CLAUDE_AWS_PROFILE" }}
-  "awsAuthRefresh": "aws sso login --profile {{ env "CLAUDE_AWS_PROFILE" }}",
+  {{ if env "CALUDE_AWS_PROFILE" }}
+  "awsAuthRefresh": "aws sso login --profile {{ env "CALUDE_AWS_PROFILE" }}",
   "env": {
-    "AWS_PROFILE": {{ env "CLAUDE_AWS_PROFILE"  }}
+    "AWS_PROFILE": "{{ env "CALUDE_AWS_PROFILE"  }}"
   },
   {{ end }}
   "permissions": {
@@ -11,6 +11,8 @@
       "Bash(go build:*)",
       "Bash(go list:*)",
       "Bash(golangci-lint run:*)",
+      "Bash(goimports:*)",
+      "Bash(go generate:*)",
       "Bash(git commit:*)",
       "Bash(git add:*)",
       "Bash(git verify-commit:*)",
@@ -20,7 +22,9 @@
       "Bash(gh pr diff:*)",
       "Bash(gh pr create:*)",
       "Bash(gh run view:*)",
-      "Bash(gh run *)",
+      "Bash(gh run list:*)",
+      "Bash(gh run download*)",
+      "Bash(gh run watch*)",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(tail:*)",
@@ -72,5 +76,6 @@
       "むちゃうま…"
     ]
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": false,
+  "theme": "dark-daltonized"
 }
