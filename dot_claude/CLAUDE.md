@@ -5,6 +5,10 @@
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
 
+# Git
+
+- Never use `git -C <dir>`. It makes permission management harder. Always run git commands from the current working directory.
+
 # General Development Workflow
 
 For any non-trivial task, follow these four phases:
