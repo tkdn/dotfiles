@@ -1,6 +1,6 @@
 ---
 name: babysit-renovate-prs
-description: Helps opsmaster on-call rotation triage and prioritize Renovate/Dependabot PRs for weekly merge. Invoked as `/babysit-renovate-prs <org>/<team>`. Fetches all open Renovate and Dependabot PRs across repositories managed by the given GitHub Team, then groups them by merge priority. Use this skill whenever the user mentions opsmaster duties, Renovate PR triage, dependency update backlog, or weekly dependency maintenance — even if they don't say "babysit" explicitly.
+description: Helps opsmaster on-call rotation triage and prioritize Renovate/Dependabot PRs for weekly merge, and also lists release-please PRs separately. Invoked as `/babysit-renovate-prs <org>/<team>`. Fetches all open Renovate, Dependabot, and release-please PRs across repositories managed by the given GitHub Team, groups dependency PRs by merge priority, and shows release PRs in a dedicated section. Use this skill whenever the user mentions opsmaster duties, Renovate PR triage, dependency update backlog, weekly dependency maintenance, or release PR overview — even if they don't say "babysit" explicitly.
 ---
 
 # babysit-renovate-prs
@@ -21,7 +21,7 @@ If no argument is given, print an error and stop — do not guess defaults.
 
 ## Step 1 & 2: Fetch repositories and collect open PRs
 
-Use the bundled script to fetch all admin repositories for the team and collect open Renovate/Dependabot PRs in one step. The script outputs one JSON object per line (NDJSON):
+Use the bundled script to fetch all admin repositories for the team and collect open Renovate/Dependabot/release-please PRs in one step. The script outputs one JSON object per line (NDJSON):
 
 ```bash
 bash <skill-base-dir>/scripts/fetch_prs.sh <org>/<team>
@@ -29,13 +29,26 @@ bash <skill-base-dir>/scripts/fetch_prs.sh <org>/<team>
 
 Each line has these fields: `repo`, `author`, `number`, `title`, `url`, `createdAt`, `labels`, `headRefName`.
 
+Release-please PRs are identified by the `autorelease: pending` label combined with an author whose login contains `release-please`. They are separated from the dependency update triage and shown in their own section.
+
 Also include any PR whose title contains `[security]`, regardless of author — these are already included if opened by Renovate or Dependabot, but be aware they may appear in the results from the script.
 
 ---
 
-## Step 3: Gather details for each PR
+## Step 3: Split PRs into two tracks
 
-For each PR, collect the following:
+Before gathering details, separate the fetched PRs into two tracks:
+
+- **Dependency updates**: author is `renovate` or `dependabot`
+- **Release PRs**: author contains `release-please`
+
+Only dependency update PRs go through the priority classification (Steps 3–4). Release PRs are collected separately and shown in their own section at the end of the report (Step 5).
+
+---
+
+## Step 3: Gather details for each dependency update PR
+
+For each dependency update PR, collect the following:
 
 ### Vulnerability check
 
@@ -70,27 +83,26 @@ gh api "/repos/<owner>/<repo>/issues/<number>/comments" \
 
 ---
 
-## Step 4: Classify into priority groups
+## Step 4: Classify dependency update PRs into priority groups
 
 Each PR belongs to exactly one group — the highest priority that applies.
 
 **Priority 1 — Security fix**
 - Dependabot PR with a linked open security alert, OR
 - Title contains `[security]`
+- Show regardless of days open
 
 **Priority 2 — Stale (14+ days)**
 - `createdAt` is 14 or more days before today
 - Not already in Priority 1
 
-**Priority 3 — CI passing**
+**Priority 3 — Ready to merge (7+ days old, CI passing)**
 - All CI checks passed
+- `createdAt` is 7 or more days before today
 - Not already in Priority 1 or 2
 - If a Claude Code / renovate-approve comment exists, note it in the output
 
-**Priority 4 — Low risk**
-- Updates to `devDependencies`, test tooling, type definitions (`@types/*`), linters, etc.
-- Inferred from PR title, labels, or branch name
-- Not already in a higher priority group
+PRs that are fewer than 7 days old and not in Priority 1 or 2 are omitted from the report entirely — they're too fresh to need a decision this week.
 
 Within each group, sort by `createdAt` ascending (oldest first).
 
@@ -123,21 +135,25 @@ The Markdown table report format:
 |---|---|---|---|
 | ...
 
-## Priority 3: CI passing (N)
-
-| Repository | PR | Created | Days open |
-|---|---|---|---|
-| ...
-
-## Priority 4: Low risk (N)
+## Priority 3: Ready to merge (N)
 
 | Repository | PR | Created | Days open |
 |---|---|---|---|
 | ...
 
 ---
-Total: N PRs across N repositories
+
+## Release PRs (N)
+
+| Repository | PR | Version | Created | Days open |
+|---|---|---|---|---|
+| [repo-name](https://github.com/org/repo) | [PR title](PR URL) | vX.Y.Z | YYYY-MM-DD | N |
+
+---
+Total: N dependency PRs + N release PRs across N repositories
 ```
+
+The "Version" column in the Release PRs table should be extracted from the PR title (e.g., `chore(main): release 6.1.1` → `6.1.1`). If no version is discernible, leave it blank.
 
 If a group has no PRs, show "None" instead of an empty table.
 
@@ -148,6 +164,7 @@ After writing the file, tell the user: "Copied to clipboard. Also saved to `/tmp
 ## Notes
 
 - Requires `gh` CLI to be authenticated. If not, prompt the user to run `gh auth login`.
-- If CI status cannot be fetched for a PR, treat it as unknown and place it in Priority 4.
+- If CI status cannot be fetched for a PR and it is 7+ days old, treat it as unknown and still include it in Priority 3 with a note that CI status is unknown.
 - If a PR qualifies for multiple groups, always place it in the highest priority group only.
+- PRs fewer than 7 days old are only shown if they qualify for Priority 1 (security).
 - Be mindful of API rate limits when the team manages many repositories — pace requests if needed.
