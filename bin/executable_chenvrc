@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+target=$1
+
+if [[ "$target" != "dev" && "$target" != "test" ]]; then
+  echo "Usage: switch_envrc [dev|test]" >&2
+  exit 1
+fi
+
+file=".envrc.$target"
+
+if [[ ! -f "$file" ]]; then
+  echo "Error: $file not found" >&2
+  exit 1
+fi
+
+ln -sf "$file" .envrc
+echo "Switched to $file"
+
+direnv allow
