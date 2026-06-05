@@ -108,7 +108,27 @@ Within each group, sort by `createdAt` ascending (oldest first).
 
 ---
 
-## Step 5: Output
+## Step 5: Dependency Dashboard health check
+
+For each repository that had Renovate PRs in the fetched data, look up its Dependency Dashboard issue and count the backlog. Do this in parallel for all repos.
+
+```bash
+gh issue list --repo <owner>/<repo> --search "Dependency Dashboard" --json body --limit 1 \
+  | jq -r '.[0].body // ""' \
+  | awk '
+    /^## Awaiting Schedule/{section="awaiting"; next}
+    /^## Rate-Limited/{section="rate"; next}
+    /^## /{section=""; next}
+    (section=="awaiting" || section=="rate") && /- \[ \]/{count++}
+    END{print count+0}
+  '
+```
+
+Sum `Awaiting Schedule` and `Rate-Limited` checkbox items into a single "pending" count per repo. Repos with 0 pending can be omitted from the Dashboard section.
+
+---
+
+## Step 6: Output
 
 Write the report to a temp file and copy it to the clipboard:
 
@@ -150,12 +170,26 @@ The Markdown table report format:
 | [repo-name](https://github.com/org/repo) | [PR title](PR URL) | vX.Y.Z | YYYY-MM-DD | N |
 
 ---
+
+## Dependency Dashboard (repos with pending updates)
+
+| Repository | Pending (Awaiting + Rate-Limited) |
+|---|---|
+| [repo-name](https://github.com/org/repo) | N ⚠️ |
+
+---
 Total: N dependency PRs + N release PRs across N repositories
 ```
 
 The "Version" column in the Release PRs table should be extracted from the PR title (e.g., `chore(main): release 6.1.1` → `6.1.1`). If no version is discernible, leave it blank.
 
-If a group has no PRs, show "None" instead of an empty table.
+In the Dependency Dashboard section:
+- Sort by pending count descending (most backlogged first)
+- Add ⚠️ if pending count is 20 or more
+- Omit repos with 0 pending items
+- If all repos have 0 pending, show "None"
+
+If a priority group has no PRs, show "None" instead of an empty table.
 
 After writing the file, tell the user: "Copied to clipboard. Also saved to `/tmp/renovate-triage.md`."
 
