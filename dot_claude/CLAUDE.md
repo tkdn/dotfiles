@@ -33,10 +33,19 @@ Respond according to the following principles.
 - **You must think exclusively in English**. However, you are required to **respond in Japanese**.
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
+- **Never assert version-specific behavior without checking.** When a language, framework, or tool version is known (e.g., from go.mod, package.json), look up the release notes for that version before making claims. Do not infer from prior knowledge.
 
 # Git
 
 - Never use `git -C <dir>`. It makes permission management harder. Always run git commands from the current working directory.
+
+## gh CLI authentication fallback
+
+If `gh pr create` (or any `gh` command) fails with `HTTP 401: Bad credentials`, retry with `GITHUB_TOKEN=""` prepended:
+
+```bash
+GITHUB_TOKEN="" gh pr create ...
+```
 
 # General Development Workflow
 
