@@ -47,6 +47,11 @@ If `gh pr create` (or any `gh` command) fails with `HTTP 401: Bad credentials`, 
 GITHUB_TOKEN="" gh pr create ...
 ```
 
+# Writing Markdown Documents
+
+- When a URL is available in context and relevant to the content, link it rather than leaving the text bare.
+- Do not use inline code formatting for general technical terms (e.g. ECS Fargate, REST API — wrong) or file paths (e.g. src/components/Foo.tsx — wrong). Reserve backticks for identifiers, values, and symbols that appear verbatim in actual code (e.g. `domain.UserID`, `MAX_RETRIES` — correct). When in doubt, omit the backticks.
+
 # General Development Workflow
 
 For any non-trivial task, follow these four phases:
