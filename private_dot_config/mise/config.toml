@@ -2,6 +2,7 @@
 bun = "latest"
 ecspresso = "latest"
 ghalint = "latest"
+"go:github.com/tkdn/wire-cruiser/cmd/wire-cruiser" = "latest"
 node = "24"
 "npm:@anthropic-ai/claude-code" = "latest"
 pnpm = "latest"
