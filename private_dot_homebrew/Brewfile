@@ -1,0 +1,267 @@
+tap "1password/tap"
+tap "aquaproj/aqua"
+tap "datadog-labs/pack", "https://github.com/datadog-labs/homebrew-pack.git"
+tap "fujiwara/tap"
+tap "getsentry/tools"
+tap "olleolleolle/adr-tools"
+tap "rcmdnk/file"
+tap "stns/stns_passwd"
+tap "suzuki-shunsuke/pinact"
+tap "suzuki-shunsuke/tfcmt", trusted: true
+# Static checker for GitHub Actions workflow files
+brew "actionlint"
+# Library and utilities for processing GIFs
+brew "giflib"
+# Library for manipulating PNG images
+brew "libpng"
+# General-purpose data compression with high compression ratio
+brew "xz"
+# Companion library to apr, the Apache Portable Runtime library
+brew "apr-util"
+# Declarative CLI Version manager
+brew "aqua"
+# Automatic configure script builder
+brew "autoconf"
+# Tool for generating GNU Standards-compliant Makefiles
+brew "automake"
+# Official Amazon AWS command-line interface
+brew "awscli"
+# Simple command-line tool to read AWS CloudWatch logs
+brew "awslogs"
+# GNU internationalization (i18n) and localization (l10n) library
+brew "gettext"
+# Core application library for C
+brew "glib"
+# Vector graphics library with cross-device output support
+brew "cairo"
+# Manage your dotfiles across multiple diverse machines, securely
+brew "chezmoi"
+# Statistics utility to count lines of code
+brew "cloc"
+# Cross-platform make
+brew "cmake"
+# C library implementing the SSH2 protocol
+brew "libssh2"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Generic library support script
+brew "libtool"
+# ODBC 3 connectivity for UNIX
+brew "unixodbc"
+# Libraries to talk to Microsoft SQL Server and Sybase databases
+brew "freetds"
+# Postgres C API library
+brew "libpq"
+# Dependency Manager for PHP
+brew "composer"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Your feedback loop with the agent: review plans and code locally
+brew "crit"
+# Cryptographic recipes and primitives for Python
+brew "cryptography"
+# Good-lookin' diffs with diff-highlight and more
+brew "diff-so-fancy"
+# Load/unload environment variables based on $PWD
+brew "direnv"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Isolated development environments using Docker
+brew "docker-compose"
+# Text processing system for reStructuredText
+brew "docutils"
+# Asynchronous event library
+brew "libevent"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# OpenType text shaping engine
+brew "harfbuzz"
+# Subtitle renderer for the ASS/SSA subtitle format
+brew "libass"
+# Light HTTP/1.1 server library
+brew "libmicrohttpd"
+# Reliable Internet Stream Transport (RIST)
+brew "librist"
+# Framework for layout and rendering of i18n text
+brew "pango"
+# Secure Reliable Transport
+brew "srt"
+# OCR (Optical Character Recognition) engine
+brew "tesseract"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Collection of GNU find, xargs, and locate
+brew "findutils"
+# User-friendly command-line shell for UNIX-like operating systems
+brew "fish"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# Toolkit for image loading and pixel buffer manipulation
+brew "gdk-pixbuf"
+# GitHub command-line tool
+brew "gh"
+# Remote repository management made easy
+brew "ghq"
+# Command-line utility for uploading Gists
+brew "gist"
+# Distributed revision control system
+brew "git"
+# Light, temporary commits for git
+brew "git-now"
+# Prevents you from committing sensitive information to a git repo
+brew "git-secrets"
+# GNU implementation of the famous stream editor
+brew "gnu-sed"
+# GNU Privacy Guard (OpenPGP)
+brew "gnupg"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# Generate introspection data for GObject libraries
+brew "gobject-introspection"
+# Database migrations CLI tool
+brew "golang-migrate"
+# Fast linters runner for Go
+brew "golangci-lint"
+# GNU triangulated surface library
+brew "gts"
+# Library to render SVG files using Cairo
+brew "librsvg"
+# Graph visualization software from AT&T and Bell Labs
+brew "graphviz"
+# GNU grep, egrep and fgrep
+brew "grep"
+# GNU Ubiquitous Intelligent Language for Extensions
+brew "guile"
+# Database of common MIME types
+brew "shared-mime-info"
+# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+brew "libheif"
+# Library for reading RAW files from digital photo cameras
+brew "libraw"
+# Tools and libraries to manipulate images in select formats
+brew "imagemagick"
+# Image manipulation library
+brew "jpeg"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# C library of Git core methods that is re-entrant and linkable
+brew "libgit2"
+# XML security library
+brew "libxmlsec1"
+# C XSLT library for GNOME
+brew "libxslt"
+# YAML Parser
+brew "libyaml"
+# Mac App Store command-line interface
+brew "mas"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Open source relational database management system
+brew "mysql@8.0"
+# HTTP/2 C Library
+brew "nghttp2"
+# Network Kanji code conversion Filter (NKF)
+brew "nkf"
+# Tools for one-time password authentication systems
+brew "oath-toolkit"
+# Simplistic interactive filtering tool
+brew "peco"
+# Pins GitHub Actions to full hashes and versions
+brew "pinact"
+# Pinentry for GPG on Mac
+brew "pinentry-mac"
+# Object-relational database system
+brew "postgresql@16"
+# Object-relational database system
+brew "postgresql@17"
+# Show ps output as a tree
+brew "pstree"
+# CLI companion with 200+ commands across 33+ Datadog products
+brew "pup"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.12"
+# Install various Ruby versions and implementations
+brew "ruby-build"
+# Ruby version manager
+brew "rbenv"
+# Persistent key-value database, with built-in net interface
+brew "redis"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# Display and control your Android device
+brew "scrcpy"
+# Notify the execution result of terraform command
+brew "tfcmt"
+# Text interface for Git repositories
+brew "tig"
+# Terminal multiplexer
+brew "tmux"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Extraction utility for .zip compressed archives
+brew "unzip"
+# Executes a program periodically, showing output fullscreen
+brew "watch"
+# Internet file retriever
+brew "wget"
+# Pluggable terminal workspace, with terminal multiplexer as the base feature
+brew "zellij"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
+# Application launcher and productivity software
+cask "alfred"
+# Transfer files from and to an Android smartphone
+cask "android-file-transfer"
+# Android SDK component
+cask "android-platform-tools"
+# Application uninstaller
+cask "appcleaner"
+# Securely stores and accesses AWS credentials in a development environment
+cask "aws-vault-binary"
+# Clipboard extension app
+cask "clipy"
+# Collaborative team software
+cask "figma"
+# Web browser
+cask "firefox"
+cask "font-plemol-jp-nf"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Cross-platform Git credential storage for multiple hosting providers
+cask "git-credential-manager"
+# Web browser
+cask "google-chrome@canary"
+# Japanese input software
+cask "google-japanese-ime"
+# Keyboard customiser
+cask "karabiner-elements"
+# Provides updates to various Microsoft products
+cask "microsoft-auto-update"
+# Multi-platform web browser
+cask "microsoft-edge"
+# Office suite
+cask "microsoft-office"
+# Online collaborative whiteboard platform
+cask "miro"
+# Tool to reverse the direction of scrolling
+cask "scroll-reverser"
+# Native GUI tool for relational databases
+cask "tableplus"
+# Open-source code editor
+cask "visual-studio-code"
+# Video communication and virtual meeting platform
+cask "zoom"
+mas "GIPHY CAPTURE", id: 668208984
+mas "LINE", id: 539883307
+mas "Magnet", id: 441258766
+mas "Skitch", id: 425955336
+npm "@anthropic-ai/claude-code"
+npm "corepack"
