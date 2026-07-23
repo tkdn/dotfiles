@@ -32,7 +32,8 @@
       "Bash(sed:*)",
       "Bash(exit 1)",
       "Bash(python3 -:*)",
-      "Bash(code:*)"
+      "Bash(code:*)",
+      "Bash(crit:*)"
     ],
     "deny": [
       "Bash(rm:*)",
@@ -44,7 +45,16 @@
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
-    "ruby-lsp@claude-plugins-official": true
+    "ruby-lsp@claude-plugins-official": true,
+    "crit@crit": true
+  },
+  "extraKnownMarketplaces": {
+    "crit": {
+      "source": {
+        "source": "github",
+        "repo": "tomasz-tomczyk/crit"
+      }
+    }
   },
   "spinnerVerbs": {
     "mode": "replace",
