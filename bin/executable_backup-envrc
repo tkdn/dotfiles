@@ -1,0 +1,29 @@
+#!/usr/bin/env fish
+
+set base_dir ~/.config/envrc
+
+for repo in (ghq list)
+    set repo_root (ghq root)/$repo
+
+    for envrc_path in (find $repo_root -not -path "*/node_modules/*" \( -name ".envrc" -o -name ".env" \) 2>/dev/null)
+        set rel_dir (string replace $repo_root "" (path dirname $envrc_path))
+        set dest_dir $base_dir/$repo$rel_dir
+        set dest_file $dest_dir/.envrc
+
+        if test -e $dest_file
+            continue
+        end
+
+        mkdir -p $dest_dir
+
+        if string match -q "*/.envrc" $envrc_path
+            cp $envrc_path $dest_file
+        else
+            # .env only — generate a .envrc that sources it
+            set env_rel (string replace $repo_root/ "" $envrc_path)
+            echo "source_env $repo_root/$env_rel" > $dest_file
+        end
+
+        echo "created: $dest_file"
+    end
+end
