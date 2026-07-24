@@ -263,5 +263,3 @@ mas "GIPHY CAPTURE", id: 668208984
 mas "LINE", id: 539883307
 mas "Magnet", id: 441258766
 mas "Skitch", id: 425955336
-npm "@anthropic-ai/claude-code"
-npm "corepack"
