@@ -229,6 +229,8 @@ cask "aws-vault-binary"
 # Clipboard extension app
 cask "clipy"
 # Collaborative team software
+cask "docker-desktop"
+# Collaborative team software
 cask "figma"
 # Web browser
 cask "firefox"
