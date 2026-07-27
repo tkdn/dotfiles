@@ -1,20 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env fish
 
-if command -v fisher &> /dev/null
+if not functions -q fisher
   curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-  fisher install decors/fish-ghq jethrokuan/fzf
 else
   echo 'fisher already installed.'
 end
 
-if command -v omf &> /dev/null
-  curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
-else
-  echo 'oh-my-fish already installed.'
-end
-
-if not omf list | grep -q bobthefish
-  omf install bobthefish
-else
-  echo 'bob-the-fish theme already installed.'
-end
+fisher install decors/fish-ghq jethrokuan/fzf oh-my-fish/theme-bobthefish
