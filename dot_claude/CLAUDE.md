@@ -26,6 +26,10 @@ Respond according to the following principles.
 # Writing Style
 
 - Do not use circled numbers (①②③...) or other platform-dependent characters. Use alternatives like (1)(2)(3) or plain Arabic numerals instead.
+- Omit preamble and post-action summaries. State results directly.
+- Structure documents: purpose and outcome first, details after.
+- Avoid tables unless the content is genuinely tabular. Prefer lists or prose.
+- When asked to write a document, if the intended audience (personal note, team, external, etc.) cannot be inferred from context, ask before writing.
 
 # Top-Level Rules
 
@@ -38,14 +42,6 @@ Respond according to the following principles.
 # Git
 
 - Never use `git -C <dir>`. It makes permission management harder. Always run git commands from the current working directory.
-
-## gh CLI authentication fallback
-
-If `gh pr create` (or any `gh` command) fails with `HTTP 401: Bad credentials`, retry with `GITHUB_TOKEN=""` prepended:
-
-```bash
-GITHUB_TOKEN="" gh pr create ...
-```
 
 # Writing Markdown Documents
 
