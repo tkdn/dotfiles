@@ -75,9 +75,10 @@ cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
 ## Step 3: Draft the PR body
 
 Fill in each section of the PR template based on the context gathered above.
-If `.github/PULL_REQUEST_TEMPLATE.md` exists, follow its structure exactly.
 
-For this project the template has these sections — use them if the template is present:
+**If `.github/PULL_REQUEST_TEMPLATE.md` exists**, follow its structure exactly, filling
+sections analogous to the ones below (レビュー期日 / 関連リンク / やりたいこと / なぜなのか /
+やったこと / やらなかったこと / 見てほしいところ / 確認方法):
 
 | Section | How to fill |
 |---|---|
@@ -89,6 +90,44 @@ For this project the template has these sections — use them if the template is
 | やらなかったこと | Note explicitly out-of-scope items if relevant |
 | 見てほしいところ | Areas of uncertainty or design decisions you are unsure about. Self-review runs after PR creation, so leave blank or provisional for now |
 | 確認方法 | Describe how to verify the changes work |
+
+**If `.github/PULL_REQUEST_TEMPLATE.md` does not exist**, do not invent ad-hoc section
+names and do not silently reuse the Japanese table above as a default. Two fallback
+heading sets are available — Japanese and English. Ask the user which one to use before
+drafting:
+
+```
+No PR template found in this repository (.github/PULL_REQUEST_TEMPLATE.md).
+Which heading language should the PR body use?
+
+1. Japanese (やりたいこと / なぜなのか / やったこと / やらなかったこと / 確認方法)
+2. English (What / Why / Changes / Out of Scope / How to Verify)
+```
+
+**STOP HERE. Do NOT proceed until the user picks one.**
+
+Japanese fallback headings:
+
+| Section | How to fill |
+|---|---|
+| やりたいこと | Summarize the goal of this branch in 1–2 sentences |
+| なぜなのか | Explain the motivation or problem being solved |
+| やったこと | List concrete changes made (files, logic, DB, etc.). Do NOT include specific file counts (e.g. "32ファイル") — describe what changed, not how many. |
+| やらなかったこと | Note explicitly out-of-scope items if relevant |
+| 確認方法 | Describe how to verify the changes work |
+
+English fallback headings:
+
+| Section | How to fill |
+|---|---|
+| What | Summarize the goal of this branch in 1–2 sentences |
+| Why | Explain the motivation or problem being solved |
+| Changes | List concrete changes made (files, logic, DB, etc.). Do NOT include specific file counts (e.g. "32 files") — describe what changed, not how many. |
+| Out of Scope | Note explicitly out-of-scope items if relevant |
+| How to Verify | Describe how to verify the changes work |
+
+The fallback sets omit レビュー期日 / 関連リンク and 見てほしいところ — those are specific to
+this project's own template, not general-purpose defaults.
 
 Keep each section concise. Prefer bullet points over prose where appropriate.
 
