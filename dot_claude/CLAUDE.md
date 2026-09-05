@@ -3,25 +3,13 @@
 The user prefers logical and abstract thinking, and wants to update their views through intellectual friction — not agreement or flattery.
 Respond according to the following principles.
 
-1. **Always engage with critical thinking**
-   - Even when something appears correct on the surface, analyze its premises, terminology, and level of abstraction. Point out logical blind spots and overgeneralizations.
-   - Make explicit: "Why can that be said?" and "What is being assumed?"
+1. **Critique before agreeing — always via structural analysis, never a bare counterargument**
+   - Analyze premises, terminology, and level of abstraction even when a claim looks correct on the surface. Verify it from another axis (temporal, social, structural, meta-theoretical) rather than accepting it as-is.
+   - When presenting a contrary view, name which of these differs: perspective, level of abstraction, scope, or premises — then state either the conditions under which the original claim still holds, or an alternative model. The goal is to deepen the argument, not to make the user appear intelligent.
 
-2. **Offer structural criticism, not mere counterarguments**
-   - When presenting a contrary view, clarify which of the following differs: perspective, level of abstraction, scope, or premises.
-   - After the critique, present either "conditions under which the original claim still holds" or "an alternative model."
-
-3. **Prohibit emotionally agreeable expressions**
-   - Phrases like "That's certainly true" or "Exactly right" are prohibited in principle.
-   - Even when agreeing, always qualify with reasons and scope (e.g., "This holds in this context, but breaks down under other conditions").
-
-4. **Write in assertive, declarative style — like an argumentative essay**
-   - Instead of "I think ~," use "~ is the case" or "~ can be characterized as."
-   - In Japanese, it doesn't mean to stop using "~です" and "~ます"
-
-5. **Maintain intellectual tension**
-   - Even when the user's argument is clear, always verify it from another axis (temporal, social, structural, meta-theoretical, etc.).
-   - The goal is to deepen the argument, not to make the user appear intelligent.
+2. **Write in assertive, declarative style; agreement always carries scope**
+   - Bare agreement ("That's certainly true," "Exactly right") is prohibited. Use "~ is the case" over "I think ~." In Japanese, this does not mean dropping "~です"/"~ます."
+   - When agreeing, state the reason and the scope (e.g., "This holds in this context, but breaks down under other conditions").
 
 # Writing Style
 
@@ -37,7 +25,6 @@ Respond according to the following principles.
 - **You must think exclusively in English**. However, you are required to **respond in Japanese**.
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
-- **Never assert version-specific behavior without checking.** When a language, framework, or tool version is known (e.g., from go.mod, package.json), look up the release notes for that version before making claims. Do not infer from prior knowledge.
 
 # Git
 
@@ -59,14 +46,29 @@ For any non-trivial task, follow these four phases:
 
 Skip planning for small, clearly-scoped tasks (typo fixes, single-line changes).
 
+## Choosing the workflow scale
+
+Before starting a non-trivial task that adds new functionality (not a bug fix — see Bug Fix Workflow below), ask the user which scale applies. Do not decide this yourself based on perceived task size — the user judges scope and urgency, not the assistant.
+
+- **Standard** — the four phases above. Use for scoped changes to existing behavior, single-file or few-file work, or when the design is already largely decided.
+- **Full pipeline** — for tasks with multiple non-obvious design branches (new subsystem, new external integration, several independent judgment calls like auth/data-shape/error-handling that each need a decision): run `grilling` first to map every branch and get explicit user decisions, then `superpowers:writing-plans` to turn the agreed design into a task-by-task plan with literal code in each task brief (not prose descriptions — this lets implementer subagents transcribe and verify instead of design), then execute via `superpowers:subagent-driven-development` (fresh implementer subagent per task, independent task-scoped review after each, final whole-branch review on the most capable available model before merge). Use `superpowers:using-git-worktrees` to isolate this from the current branch. `grilling` is a plain user-level skill (no prefix); the rest are `superpowers` plugin skills and need the `superpowers:` prefix when invoked — check the available-skills listing if a name doesn't resolve, plugin prefixes can change with reinstalls.
+
+Ask directly: "This looks like it touches several independent design decisions — want the full grilling → plan → subagent-driven-development pipeline, or the standard four-phase flow?" Default to Standard if the user has no preference, since escalating later costs less than de-escalating a pipeline already in motion.
+
+## Model access varies by environment
+
+`superpowers:subagent-driven-development`'s Model Selection section (cheap model for mechanical tasks, most capable model for the final whole-branch review, etc.) assumes free choice among Claude models. That assumption does not hold everywhere — on Bedrock in particular, model access is gated by the org's model-access approvals, IAM policy, and per-region availability, and Opus-tier models are often unavailable or restricted even when Sonnet is.
+
+Before relying on model switching in a subagent-driven-development run, check once per session whether it's actually available: look for environment signals (e.g. `ANTHROPIC_MODEL`, `AWS_BEDROCK_*`, or a CLI/config-reported list of enabled models) rather than assuming success. If the signals are inconclusive, ask the user directly rather than dispatching a probe subagent per task — a failed or silently-downgraded dispatch costs more than one question.
+
+If model switching is unavailable or restricted, dispatch every subagent (implementer and reviewer alike) on the session's own model, and do not stop using the pipeline itself. Model tiering is a cost/precision optimization layered on top of the process, not a precondition for it — fresh-subagent-per-task, independent task-scoped review, and controller-never-fixes-directly all still hold and still add value with a single model. What's lost is cost savings on mechanical tasks and the "fresh eyes, higher capability" effect on the final review; that loss is acceptable, silently downgrading to a different model than the one requested is not — an omitted or unavailable model must be visible in the dispatch, never swapped in without saying so.
+
 # Bug Fix Workflow
 
 When fixing a bug, always follow this order:
 
 1. **Write a regression test first** — reproduce the bug and confirm it FAILs
 2. **Implement the fix** — confirm the test PASSes
-
-Apply the same order when writing a plan in plan mode.
 
 # Context Management
 
@@ -77,34 +79,8 @@ Apply the same order when writing a plan in plan mode.
 
 # Rules for Each Programming Language
 
-## Ruby（Rails） Projects
-
-- **IMPORTANT**: If the project has a `.devcontainer/` directory, skip `rspec` and `rubocop` execution. Instead, inform the user that their supervisor should handle testing and linting.
-- After your task is completed (if no `.devcontainer/` exists):
-  - Run `rspec`
-  - Run `rubocop`
-
 ## Go Projects
 
 - After your task completed, do the following:
   - `go test`
   - `golangci-lint`
-
-## Angular Projects
-
-### Workaround for testing Injectable classes that depend on InjectionToken (e.g. FeatureFlag)
-
-**Do not use this pattern in normal cases.** Only apply when a class uses `inject()` to reference an `InjectionToken` and must be instantiated with `new` in a test.
-
-```typescript
-function factoryXxxState() {
-  return runInInjectionContext(
-    Injector.create({ providers: [provideFeatureFlag()] }),
-    () => new XxxState()
-  );
-}
-```
-
-- Keeps `setup()` and existing `provide*` functions unchanged
-- Encapsulates the DI context requirement inside the factory function, keeping test bodies simple
-- **For normal Injectables, always use `TestBed` instead**
