@@ -46,7 +46,10 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "ruby-lsp@claude-plugins-official": true,
-    "crit@crit": true
+    "crit@crit": true,
+    "cosense-cli@cosense-cli": true,
+    "modern-go-guidelines@goland-claude-marketplace": true,
+    "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "crit": {
@@ -54,8 +57,37 @@
         "source": "github",
         "repo": "tomasz-tomczyk/crit"
       }
+    },
+    "cosense-cli": {
+      "source": {
+        "source": "github",
+        "repo": "helpfeel/cosense-cli"
+      }
+    },
+    "goland-claude-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "JetBrains/go-modern-guidelines"
+      }
     }
   },
+  {{ if eq .chezmoi.os "linux" }}
+  {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); TITLE=$(echo \"$INPUT\" | jq -r '.title // \"通知\"'); MSG=$(echo \"$INPUT\" | jq -r '.message // \"Claude Codeからの通知\"'); /mnt/c/opt/go-tosast/toast64.exe --app-id 'Claude Code' --title \"$TITLE\" --message \"$MSG\" --audio 'default' --duration 'short'"
+          }
+        ]
+      }
+    ]
+  },
+  {{   end }}
+  {{ end }}
   "spinnerVerbs": {
     "mode": "replace",
     "verbs": [
@@ -87,5 +119,6 @@
     ]
   },
   "alwaysThinkingEnabled": false,
+  "advisorModel": "fable",
   "theme": "dark-daltonized"
 }
