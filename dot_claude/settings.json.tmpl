@@ -33,7 +33,18 @@
       "Bash(exit 1)",
       "Bash(python3 -:*)",
       "Bash(code:*)",
-      "Bash(crit:*)"
+      "Bash(crit:*)",
+      "Bash(gh stack init:*)",
+      "Bash(gh stack view:*)",
+      "Bash(gh stack modify:*)",
+      "Bash(gh stack rebase:*)",
+      "Bash(gh stack add:*)",
+      "Bash(gh stack checkout:*)",
+      "Bash(gh stack unstack:*)",
+      "Bash(gh stack bottom:*)",
+      "Bash(gh stack down:*)",
+      "Bash(gh stack switch:*)",
+      "Bash(gh stack up:*)"
     ],
     "deny": [
       "Bash(rm:*)",
@@ -47,8 +58,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "ruby-lsp@claude-plugins-official": true,
     "crit@crit": true,
-    "cosense-cli@cosense-cli": true,
     "modern-go-guidelines@goland-claude-marketplace": true,
+    "cosense-cli@cosense-cli": true,
     "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
@@ -58,16 +69,16 @@
         "repo": "tomasz-tomczyk/crit"
       }
     },
-    "cosense-cli": {
-      "source": {
-        "source": "github",
-        "repo": "helpfeel/cosense-cli"
-      }
-    },
     "goland-claude-marketplace": {
       "source": {
         "source": "github",
         "repo": "JetBrains/go-modern-guidelines"
+      }
+    },
+    "cosense-cli": {
+      "source": {
+        "source": "github",
+        "repo": "helpfeel/cosense-cli"
       }
     }
   },
@@ -120,5 +131,6 @@
   },
   "alwaysThinkingEnabled": false,
   "advisorModel": "fable",
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "tui": "fullscreen"
 }
