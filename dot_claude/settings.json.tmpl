@@ -91,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "INPUT=$(cat); TITLE=$(echo \"$INPUT\" | jq -r '.title // \"通知\"'); MSG=$(echo \"$INPUT\" | jq -r '.message // \"Claude Codeからの通知\"'); /mnt/c/opt/go-tosast/toast64.exe --app-id 'Claude Code' --title \"$TITLE\" --message \"$MSG\" --audio 'default' --duration 'short'"
+            "command": "INPUT=$(cat); TITLE=$(echo \"$INPUT\" | jq -r '.title // \"通知\"'); MSG=$(echo \"$INPUT\" | jq -r '.message // \"Claude Codeからの通知\"'); /mnt/c/opt/toast64.exe --app-id 'Claude Code' --title \"$TITLE\" --message \"$MSG\" --audio 'default' --duration 'short'"
           }
         ]
       }
