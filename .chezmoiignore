@@ -6,7 +6,9 @@ pnpm-workspace.yaml
 package.json
 lefthook.yml
 node_modules
+.secretlintrc.json
 
 **/.DS_Store
-~/.config/git/config
-~/.config/git/config.bak*
+*/git/config
+*/git/config.bak*
+*/gh/hosts.yml
