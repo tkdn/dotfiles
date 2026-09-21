@@ -69,7 +69,7 @@ Present the draft to the user and ask for feedback. Incorporate any changes, the
 Post the reply to the root comment of the thread:
 
 ```bash
-GITHUB_TOKEN="" gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies \
+gh api repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies \
   --method POST \
   --field body="{reply body}"
 ```

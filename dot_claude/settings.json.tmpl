@@ -51,7 +51,27 @@
       "Read(.env.*)",
       "Read(.env)",
       "Read(.envrc)",
+      "Bash(crit share:*)",
+      "Bash(crit fetch:*)",
+      "Bash(crit pull:*)",
+      "Bash(crit push:*)",
+      "Bash(crit auth login:*)",
       "Bash(git push:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {

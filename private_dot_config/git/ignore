@@ -11,3 +11,4 @@ public/assets/*
 vendor/docker/mysql80/*
 db/*_schema.rb
 **/.claude/settings.local.json
+.worktrees

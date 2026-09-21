@@ -3,13 +3,13 @@ bun = "latest"
 ecspresso = "latest"
 ghalint = "latest"
 "go:github.com/tkdn/wire-cruiser/cmd/wire-cruiser" = "latest"
-golangci-lint = "2.13.1"
-node = "latest"
-"npm:@anthropic-ai/claude-code" = "latest"
-"npm:@helpfeel/cosense-cli" = "latest"
-pinact = "latest"
+node = "26"
+claude-code = "latest"
 pnpm = "latest"
 terraform = "latest"
+"npm:@esaio/esa-cli" = "latest"
+"npm:corepack" = "latest"
+"npm:@helpfeel/cosense-cli" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
@@ -17,5 +17,8 @@ experimental = true
 
 [settings.node]
 gpg_verify = false
+
+[settings.ruby]
+compile = true
 
 [env]

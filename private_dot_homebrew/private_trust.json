@@ -1,5 +1,14 @@
 {
   "trustedtaps": [
+    "1password/tap",
+    "aquaproj/aqua",
+    "datadog-labs/pack",
+    "fujiwara/tap",
+    "getsentry/tools",
+    "olleolleolle/adr-tools",
+    "rcmdnk/file",
+    "stns/stns_passwd",
+    "suzuki-shunsuke/pinact",
     "suzuki-shunsuke/tfcmt"
   ]
 }
