@@ -25,6 +25,7 @@ Respond according to the following principles.
 - **You must think exclusively in English**. However, you are required to **respond in Japanese**.
 - Do not arbitrarily modify domain-specific terms such as code comments, variable names, or function names, or extend existing terms.
   - If you are unsure about naming conventions, consult your supervisor.
+- **Never write planning or session context into permanent code (comments, SDL docs, config).** Do not embed review-comment IDs (e.g. `c_e39cad`), PR numbers, "ユーザ確定" / "レビュー指摘を受けて" notes, or the current deployment's transient state into code comments. Code comments carry only permanent facts that make sense from a fresh clone. Transient behavior, known-limitation caveats, and deployment specifics belong in the PR description or plan doc, not in the source. (This has come up repeatedly — check before adding any comment that references a review, a PR, or a decision's provenance.)
 
 # Git
 
@@ -38,6 +39,8 @@ Respond according to the following principles.
 # General Development Workflow
 
 For any non-trivial task, follow these four phases:
+
+**Before Explore:** fetch/pull every repository the task touches so design is based on the latest `main`, not a stale base. Skipping this once let a design proceed on a base that upstream had already superseded.
 
 1. **Explore** (Plan Mode) — Read files, understand the codebase, answer questions without making changes
 2. **Plan** (Plan Mode) — Create a detailed implementation plan. Press `Ctrl+G` to open and edit the plan before proceeding
