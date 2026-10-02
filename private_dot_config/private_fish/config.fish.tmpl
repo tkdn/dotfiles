@@ -1,6 +1,8 @@
 {{ if env "WSL_DISTRO_NAME" }}
 # homebrew for wsl
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
+# wslc
+abbr --add wslc "wslc.exe"
 {{ end }}
 
 if not functions -q fisher
