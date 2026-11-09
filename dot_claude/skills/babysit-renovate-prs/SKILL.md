@@ -110,21 +110,18 @@ Within each group, sort by `createdAt` ascending (oldest first).
 
 ## Step 5: Dependency Dashboard health check
 
-For each repository that had Renovate PRs in the fetched data, look up its Dependency Dashboard issue and count the backlog. Do this in parallel for all repos.
+Count the Dependency Dashboard backlog of every admin repository of the team — not only those with open Renovate PRs, since a repo can have a backlog and no open PR:
 
 ```bash
-gh issue list --repo <owner>/<repo> --search "Dependency Dashboard" --json body --limit 1 \
-  | jq -r '.[0].body // ""' \
-  | awk '
-    /^## Awaiting Schedule/{section="awaiting"; next}
-    /^## Rate-Limited/{section="rate"; next}
-    /^## /{section=""; next}
-    (section=="awaiting" || section=="rate") && /- \[ \]/{count++}
-    END{print count+0}
-  '
+bash <skill-base-dir>/scripts/dashboard_pending.sh <org>/<team>
 ```
 
-Sum `Awaiting Schedule` and `Rate-Limited` checkbox items into a single "pending" count per repo. Repos with 0 pending can be omitted from the Dashboard section.
+Output is TSV, one line per repo with pending updates, already sorted: `<owner/repo>`, `<packages>`, `<items>`.
+
+- **items**: pending update lines in `Awaiting Schedule` + `Rate-Limited`. Each major version is its own item, so `react-datepicker` v1–v9 is 9 items.
+- **packages**: distinct packages (or Renovate groups) among those items — the same `react-datepicker` is 1 package. This is the measure of how much work the backlog is; items inflate repos that are many majors behind on a few packages.
+
+Use the script's numbers as-is in the report; do not recount with your own awk.
 
 ---
 
@@ -173,9 +170,9 @@ The Markdown table report format:
 
 ## Dependency Dashboard (repos with pending updates)
 
-| Repository | Pending (Awaiting + Rate-Limited) |
-|---|---|
-| [repo-name](https://github.com/org/repo) | N ⚠️ |
+| Repository | Packages | Items (Awaiting + Rate-Limited) |
+|---|---|---|
+| [repo-name](https://github.com/org/repo) | N ⚠️ | N |
 
 ---
 Total: N dependency PRs + N release PRs across N repositories
@@ -184,9 +181,9 @@ Total: N dependency PRs + N release PRs across N repositories
 The "Version" column in the Release PRs table should be extracted from the PR title (e.g., `chore(main): release 6.1.1` → `6.1.1`). If no version is discernible, leave it blank.
 
 In the Dependency Dashboard section:
-- Sort by pending count descending (most backlogged first)
-- Add ⚠️ if pending count is 20 or more
-- Omit repos with 0 pending items
+- Rows in the script's order (packages descending, then items descending)
+- Add ⚠️ to the Packages cell if packages is 20 or more
+- Repos the script did not print have 0 pending items and are omitted
 - If all repos have 0 pending, show "None"
 
 If a priority group has no PRs, show "None" instead of an empty table.
