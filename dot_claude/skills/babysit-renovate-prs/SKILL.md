@@ -31,7 +31,7 @@ Each line has these fields: `repo`, `author`, `number`, `title`, `url`, `created
 
 Release-please PRs are identified by the `autorelease: pending` label combined with an author whose login contains `release-please`. They are separated from the dependency update triage and shown in their own section.
 
-Also include any PR whose title contains `[security]`, regardless of author — these are already included if opened by Renovate or Dependabot, but be aware they may appear in the results from the script.
+Also include any PR whose title contains `[security]` (case-insensitive; Renovate writes `[SECURITY]`), regardless of author — these are already included if opened by Renovate or Dependabot, but be aware they may appear in the results from the script.
 
 ---
 
@@ -54,12 +54,12 @@ For each dependency update PR, collect the following:
 
 A PR is considered a security fix if:
 - It was opened by `app/dependabot` AND has a linked Dependabot security alert, OR
-- Its title contains `[security]`
+- Its title contains `[security]` (case-insensitive)
 
-To check for linked alerts (Dependabot PRs):
+To check for linked alerts (Dependabot PRs), fetch every open alert — a repo can have more than one page of them, and an alert left on a later page leaves its PR out of Priority 1:
 ```bash
-gh api "/repos/<owner>/<repo>/dependabot/alerts" \
-  --jq '[.[] | select(.state == "open")]'
+gh api "/repos/<owner>/<repo>/dependabot/alerts?state=open&per_page=100" --paginate \
+  --jq '.[]'
 ```
 
 Cross-reference the alert's affected package with the PR's branch name or title to confirm the link.
@@ -89,7 +89,7 @@ Each PR belongs to exactly one group — the highest priority that applies.
 
 **Priority 1 — Security fix**
 - Dependabot PR with a linked open security alert, OR
-- Title contains `[security]`
+- Title contains `[security]` (case-insensitive)
 - Show regardless of days open
 
 **Priority 2 — Stale (14+ days)**
