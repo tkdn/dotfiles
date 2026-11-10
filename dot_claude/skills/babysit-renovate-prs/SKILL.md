@@ -123,6 +123,8 @@ Output is TSV, one line per repo with pending updates, already sorted: `<owner/r
 
 Use the script's numbers as-is in the report; do not recount with your own awk.
 
+After the counted repos, the script prints one `<owner/repo>`, `ERROR`, `<reason>` line for each repo whose dashboard could not be fetched (rate limit, permission, network). Its backlog is unknown, not 0.
+
 ---
 
 ## Step 6: Output
@@ -184,7 +186,8 @@ In the Dependency Dashboard section:
 - Rows in the script's order (packages descending, then items descending)
 - Add ⚠️ to the Packages cell if packages is 20 or more
 - Repos the script did not print have 0 pending items and are omitted
-- If all repos have 0 pending, show "None"
+- `ERROR` lines go below the table as `Could not fetch: [repo-name](https://github.com/org/repo) — <reason>`, one per repo; never omit them or count them as 0
+- If all repos have 0 pending and there are no `ERROR` lines, show "None"
 
 If a priority group has no PRs, show "None" instead of an empty table.
 

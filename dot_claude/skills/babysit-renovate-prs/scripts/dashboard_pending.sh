@@ -8,13 +8,23 @@
 #            "Create all rate-limited PRs at once" checkbox is not an update and is not counted.
 # packages = distinct update targets among those items. Each major version of the same package
 #            is a separate item but one package; a Renovate group (e.g. "eslint monorepo") is one package.
+# A repo whose dashboard could not be fetched (rate limit, permission, network) is printed after the
+# counted repos as:
+#   <owner/repo> <TAB> ERROR <TAB> <first line of the error>
+# A repo with no dashboard or no pending updates is not printed.
 
 set -euo pipefail
 
 count_repo() {
-  local repo="$1" body
-  body=$(gh issue list --repo "$repo" --search "Dependency Dashboard in:title" --json body --limit 1 2>/dev/null \
-    | jq -r '.[0].body // ""') || return 0
+  local repo="$1" json body err
+  err=$(mktemp)
+  if ! json=$(gh issue list --repo "$repo" --search "Dependency Dashboard in:title" --json body --limit 1 2>"$err") \
+    || ! body=$(printf '%s' "$json" | jq -r '.[0].body // ""' 2>>"$err"); then
+    printf '%s\tERROR\t%s\n' "$repo" "$(head -n 1 "$err")"
+    rm -f "$err"
+    return 0
+  fi
+  rm -f "$err"
   [[ -z "$body" ]] && return 0
   printf '%s\n' "$body" | awk -v repo="$repo" '
     /^## Awaiting Schedule/ || /^## Rate-Limited/ { s = 1; next }
@@ -55,4 +65,6 @@ if [[ -z "$repos" ]]; then
   exit 1
 fi
 
-printf '%s\n' "$repos" | xargs -P 8 -n 1 bash "$0" --repo | sort -t $'\t' -k2,2nr -k3,3nr
+results=$(printf '%s\n' "$repos" | xargs -P 8 -n 1 bash "$0" --repo)
+printf '%s\n' "$results" | awk -F '\t' 'NF && $2 != "ERROR"' | sort -t $'\t' -k2,2nr -k3,3nr
+printf '%s\n' "$results" | awk -F '\t' '$2 == "ERROR"' | sort
